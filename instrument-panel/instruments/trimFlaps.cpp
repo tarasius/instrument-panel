@@ -1,21 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "trimFlaps.h"
-#include "knobs.h"
 
 trimFlaps::trimFlaps(int xPos, int yPos, int size) : instrument(xPos, yPos, size)
 {
     setName("Trim Flaps");
     addVars();
     simVars = &globals.simVars->simVars;
-
-#ifndef _WIN32
-    // Only have hardware knobs on Raspberry Pi
-    if (globals.hardwareKnobs) {
-        addKnobs();
-    }
-#endif
-
     resize();
 }
 
@@ -260,13 +251,6 @@ void trimFlaps::update()
         resize();
     }
 
-#ifndef _WIN32
-    // Only have hardware knobs on Raspberry Pi
-    if (globals.hardwareKnobs) {
-        updateKnobs();
-    }
-#endif
-
     // Calculate values
     trimOffset = simVars->tfElevatorTrim * 20.0;
 
@@ -360,52 +344,3 @@ void trimFlaps::addVars()
     globals.simVars->addVar(name, "Auto Brake Switch Cb", false, 1, 0);
     globals.simVars->addVar(name, "Plane Alt Above Ground", false, 1, 0);
 }
-
-#ifndef _WIN32
-
-void trimFlaps::addKnobs()
-{
-    // BCM GPIO 14 and 15
-    trimKnob = globals.hardwareKnobs->add(14, 15, -1, -1, 0);
-
-    // BCM GPIO 18 and 23
-    flapsKnob = globals.hardwareKnobs->add(18, 23, -1, -1, 0);
-}
-
-void trimFlaps::updateKnobs()
-{
-    // Read knob for trim adjustment
-    int val = globals.hardwareKnobs->read(trimKnob);
-    if (val != INT_MIN) {
-        if (val > lastTrimVal) {
-            globals.simVars->write(KEY_ELEV_TRIM_DN);
-            if (fastAircraft) {
-                globals.simVars->write(KEY_ELEV_TRIM_DN);
-            }
-        }
-        else if (val < lastTrimVal) {
-            globals.simVars->write(KEY_ELEV_TRIM_UP);
-            if (fastAircraft) {
-                globals.simVars->write(KEY_ELEV_TRIM_UP);
-            }
-        }
-        lastTrimVal = val;
-    }
-
-    // Read knob for flaps
-    val = globals.hardwareKnobs->read(flapsKnob);
-    if (val != INT_MIN) {
-        if (val - lastFlapsVal > 1) {
-            // Flaps up one notch
-            globals.simVars->write(KEY_FLAPS_DECR);
-            lastFlapsVal = val;
-        }
-        else if (lastFlapsVal - val > 1 ) {
-            // Flaps down one notch
-            globals.simVars->write(KEY_FLAPS_INCR);
-            lastFlapsVal = val;
-        }
-    }
-}
-
-#endif // !_WIN32

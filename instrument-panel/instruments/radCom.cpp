@@ -1,19 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "radCom.h"
-#include "knobs.h"
 
 radCom::radCom(int xPos, int yPos, int size) : instrument(xPos, yPos, size)
 {
     setName("Rad Com");
     simVars = &globals.simVars->simVars;
-
-#ifndef _WIN32
-    // Only have hardware knobs on Raspberry Pi
-    if (globals.hardwareKnobs) {
-        addKnobs();
-    }
-#endif
 
     resize();
 }
@@ -218,13 +210,6 @@ void radCom::update()
         resize();
     }
 
-#ifndef _WIN32
-    // Only have hardware knobs on Raspberry Pi
-    if (globals.hardwareKnobs) {
-        updateKnobs();
-    }
-#endif
-
     // Calculate values - 3 d.p. for comms
     if (simVars->com1Transmit) {
         comFreq = (simVars->com1Freq + 0.0000001) * 1000.0;
@@ -237,95 +222,6 @@ void radCom::update()
 }
 
 #ifndef _WIN32
-
-void radCom::addKnobs()
-{
-    // BCM GPIO 24 and 25
-    selKnob = globals.hardwareKnobs->add(24, 25, -1, -1, 0);
-
-    // BCM GPIO 19
-    selPush = globals.hardwareKnobs->add(19, 0, -1, -1, 0);
-}
-
-void radCom::updateKnobs()
-{
-    // Read knob rotate
-    int val = globals.hardwareKnobs->read(selKnob);
-    if (val != INT_MIN) {
-        // Convert knob value to selection (adjust for desired sensitivity)
-        int diff = (prevVal - val) / 2;
-        if (diff != 0) {
-            switch (switchSel) {
-                case Swap:
-                    switchSel = Adjust;
-                    break;
-
-                case Adjust:
-                    switchSel = Swap;
-                    break;
-
-                case Adjusting:
-                    if (diff > 0) {
-                        adjustDigits(1);
-                    }
-                    else {
-                        adjustDigits(-1);
-                    }
-                    time(&lastAdjust);
-                    break;
-            }
-            prevVal = val;
-        }
-    }
-
-    // Read knob push
-    val = globals.hardwareKnobs->read(selPush);
-    if (val != INT_MIN) {
-        // If previous state was unpressed then must have been pressed
-        if (prevPush % 2 == 1) {
-            switch (switchSel) {
-                case Swap:
-                    // Debounce
-                    time(&now);
-                    if (now - lastSwap > 0) {
-                        if (simVars->com1Transmit) {
-                            globals.simVars->write(KEY_COM1_RADIO_SWAP);
-                        }
-                        else {
-                            globals.simVars->write(KEY_COM2_RADIO_SWAP);
-                        }
-                        time(&lastSwap);
-                    }
-                    break;
-
-                case Adjust:
-                    switchSel = Adjusting;
-                    adjustSetSel = 0;
-                    time(&lastAdjust);
-                    break;
-
-                case Adjusting:
-                    if (adjustSetSel == 2) {
-                        switchSel = Swap;
-                    }
-                    else {
-                        adjustSetSel++;
-                        time(&lastAdjust);
-                    }
-                    break;
-            }
-        }
-        prevPush = val;
-    }
-
-    if (switchSel == Adjusting) {
-        // Stop adjusting if more than 5 seconds since last adjustment
-        time(&now);
-        if (now - lastAdjust > 5) {
-            switchSel = Adjust;
-        }
-    }
-}
 
 void radCom::adjustDigits(int adjust)
 {

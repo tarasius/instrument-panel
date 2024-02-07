@@ -1,16 +1,12 @@
 # MICROSOFT FLIGHT SIMULATOR 2020 - INSTRUMENT PANEL
 
-![Screenshot](Screenshot.jpg)
+This is a fork of https://github.com/scott-vincent/instrument-panel with removed radio, trim and flaps knobs.
 
-The instrument panel is running on a single 24" monitor with plywood placed in front of it and holes cut out for each instrument. The knobs are connected to the GPIO pins of the same Raspberry Pi that is running the display.
+The instrument panel is running on a single monitor with plywood placed in front of it and holes cut out for each instrument. The knobs are connected to the GPIO pins of the same Raspberry Pi that is running the display.
 
 You can also run the display on a PC (the same one running FS2020 if you wish) but you won't have the knob inputs then although you can still use the knobs in the FS2020 cockpit and the changes will immediately be reflected on the instrument panel display.
 
 # Quick Start
-
-Download the following two zip files.
-
-Link: [Latest release of Instrument Panel for Windows](https://github.com/scott-vincent/instrument-panel/releases/latest/download/instrument-panel-v2.0.0-Windows-x64.zip)
 
 Link: [Latest release of Instrument Data Link for Windows](https://github.com/scott-vincent/instrument-data-link/releases/latest/download/instrument-data-link-v2.0.0-windows-x64.zip)
 
@@ -134,24 +130,3 @@ Some of the instruments are 'intelligent' and will adapt to whatever aircraft yo
 Use a specific instrument in your panel if you don't want it to auto switch, for example, use "ASI Savage Cub" instead of "ASI" to always display the Savage Cub version of the instrument.
 
 Note that only a few specific instruments have been created so far as this project is a work in progress.  
-
-# Known Issues
-
-No known issues. All issues have been resolved from version 2.0.0 onwards.
-
-# Donate
-
-If you find this project useful, would like to see it developed further or would just like to buy the author a beer, please consider a small donation.
-
-[<img src="donate.svg" width="210" height="40">](https://paypal.me/scottvincent2020)
-
-# Additional Photos
-
-Panel Front
-![Panel Front](Panel_Front.jpg)
-
-Panel Back
-![Panel Back](Panel_Back.jpg)
-
-Panel Wiring
-![Panel Wiring](Panel_Wiring.jpg)
