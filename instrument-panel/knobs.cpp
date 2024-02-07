@@ -1,12 +1,10 @@
 #ifndef _WIN32
 #ifndef NoKnobs
-#ifdef NoGpiod
 #include <wiringPi.h>
-#else
-#include <gpiod.h>
-#endif
 #endif
 #include "knobs.h"
+
+#define NoGpiod
 
 void watcher(knobs*);
 

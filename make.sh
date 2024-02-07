@@ -1,5 +1,5 @@
 # If you have an older Raspberry Pi uncomment the next line to use WiringPi instead of gpiod
-#NoGpiod=1
+NoGpiod=1
 
 if [ "$NoGpiod" = 1 ]
 then

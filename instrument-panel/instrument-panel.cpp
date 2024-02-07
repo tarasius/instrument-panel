@@ -95,7 +95,7 @@
 //#define NoKnobs
 
 // If you have an older Raspberry Pi uncomment the next line to use WiringPi instead of gpiod
-//#define NoGpiod
+#define NoGpiod
 
 #ifdef NoKnobs
 const bool HaveHardwareKnobs = false;
