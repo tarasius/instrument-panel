@@ -365,7 +365,7 @@ void annunciator::checkFuel(double fuelLevel, bool *fuelWarning, double *prevFue
 void annunciator::addKnobs()
 {
     // BCM GPIO 2
-    selSwitch = globals.hardwareKnobs->add(2, 0, -1, -1, 0);
+    selSwitch = globals.hardwareKnobs->add(14, 0, -1, -1, 0);
 }
 
 void annunciator::updateKnobs()
