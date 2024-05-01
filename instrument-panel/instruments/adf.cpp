@@ -166,7 +166,7 @@ void adf::addVars()
 void adf::addKnobs()
 {
     // BCM GPIO 19 and 26
-    adfCardKnob = globals.hardwareKnobs->add(19, 26, -1, -1, 0);
+    adfCardKnob = globals.hardwareKnobs->add(24, 25, -1, -1, 0);
 }
 
 void adf::updateKnobs()
